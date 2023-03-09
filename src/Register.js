@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useCookies } from './UseCookies';
 
 const Config = {
     headers: {
@@ -18,8 +19,7 @@ const TextInput = ({type, name, onChangeFn, placeholder}) => {
     )
 }
 
-const Register = ({showRegistration, onCloseClick}) => {
-    // firstname, lastname, customer_email, password, confirm_password
+const Register = ({showRegistration, onCloseClick, setIsLoggedIn}) => {
     const [firstname, setFirstname] = useState(null);
     const [lastname, setLastname] = useState(null);
     const [customer_email, setCustomerEmail] = useState(null);
@@ -30,6 +30,7 @@ const Register = ({showRegistration, onCloseClick}) => {
     const [register_success, setRegisterSuccess] = useState(false);
     const [has_errors, setHasErrors] = useState(false);
     const [error_message, setErrorMessage] = useState(null);
+    const [setCookie, getCookie] = useCookies();
 
     let registrationClasses = 'register-overlay hidden';
     if (showRegistration) {
@@ -94,6 +95,8 @@ const Register = ({showRegistration, onCloseClick}) => {
             const { token } = response.data;
             if (token != undefined) {
                 // @todo: login stuff... token is a token, ofc
+                setCookie('token', token);
+                setIsLoggedIn(true);
             }
         }).catch(error => console.log('Error', error)).finally(() => {});
     }

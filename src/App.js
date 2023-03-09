@@ -3,9 +3,11 @@ import './App.css';
 import Catalog from './Catalog';
 import Register from './Register';
 import React, { useState } from 'react';
+import RegisterLink from './Customer/RegisterLink';
 
 function App() {
   const [showRegistration, setShowRegistration] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   const toggleShowRegistration = (e) => {
     let showRegistrationFlag = showRegistration;
@@ -17,10 +19,11 @@ function App() {
   return (
     <div className="App">
       <div className="main">
-        <Register showRegistration={showRegistration} onCloseClick={toggleShowRegistration} />
-        <div className="register-link">
-          <a href="#" onClick={toggleShowRegistration}>Register</a>
-        </div>
+        <Register 
+          showRegistration={showRegistration} 
+          onCloseClick={toggleShowRegistration} 
+          setIsLoggedIn={setIsLoggedIn} />
+        {!isLoggedIn && <RegisterLink toggleShowRegistration={toggleShowRegistration} />}
         <Catalog />
       </div>
     </div>
