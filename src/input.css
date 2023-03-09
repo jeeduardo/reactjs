@@ -341,9 +341,6 @@
     top: 4px;
     width: 70px;
 }
-#checkout-container .error-msg {
-    color: red;
-}
 #checkout-container .step {
     border-bottom: 1px solid #d8d8d8;
     margin: 20px 0;
@@ -554,6 +551,9 @@
 }
 
 /* Customer Account Creation */
+.error-msg {
+    color: red;
+}
 .register-overlay {
     border: 1px solid #000;
     position: absolute;

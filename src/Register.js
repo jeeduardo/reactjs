@@ -8,6 +8,16 @@ const Config = {
     }
 };
 
+const TextInput = ({type, name, onChangeFn, placeholder}) => {
+    return (
+        <div className="row">
+            <div className="form-input-container">
+                <input type={type} name={name} className="form-input" onChange={e => onChangeFn(e.target.value)} placeholder={placeholder} />
+            </div>
+        </div>
+    )
+}
+
 const Register = ({showRegistration, onCloseClick}) => {
     // firstname, lastname, customer_email, password, confirm_password
     const [firstname, setFirstname] = useState(null);
@@ -18,7 +28,14 @@ const Register = ({showRegistration, onCloseClick}) => {
     const [passwords_match, setPasswordsMatch] = useState(true);
     const [registration_done, setRegistrationDone] = useState(false);
     const [register_success, setRegisterSuccess] = useState(false);
+    const [has_errors, setHasErrors] = useState(false);
+    const [error_message, setErrorMessage] = useState(null);
 
+    let registrationClasses = 'register-overlay hidden';
+    if (showRegistration) {
+        registrationClasses = 'register-overlay';
+    }
+    
     const passwordChangeHandler = (e) => {
         const confirm_password = e.target.value;
         setPasswordsMatch(first_password == confirm_password);
@@ -27,37 +44,65 @@ const Register = ({showRegistration, onCloseClick}) => {
         }
     };
 
-    let registrationClasses = 'register-overlay hidden';
-    if (showRegistration) {
-        registrationClasses = 'register-overlay';
-    }
-    
-    const handleRegistration = (e) => {
-        e.preventDefault();
-        let registrationUrl = process.env.REACT_APP_BASE_URL + 'api/users';
+    const constructPayload = () => {
         let storeId = process.env.REACT_APP_DEFAULT_STORE_ID;
         let websiteId = process.env.REACT_APP_DEFAULT_WEBSITE_ID;
-        let payload = {
-            customer: {
-                email: customer_email,
-                firstname,
-                lastname,
-                storeId,
-                websiteId
-            },
+        const email = customer_email;
+        return {
+            customer: { email, firstname, lastname, storeId, websiteId },
             password
         };
+    }
+    
+    const execRegistrationApi = (registrationUrl, payload, Config) => {
         axios.post(registrationUrl, payload, Config).then(response => {
-            const { id, email } = response.data;
-            if (id != undefined && email != undefined) {
-                setRegisterSuccess(true);
-            }
-            // onCloseClick(e);
+            handleRegistrationApiResponse(response);
         }).catch(error => {
             console.log('Error with registration', error);
         }).finally(() => {
             // Nothing to do, for now...
         });
+    }
+    
+    const handleRegistrationApiResponse = (response) => {
+        const { id, email } = response.data;
+        if (id != undefined && email != undefined) {
+            setRegisterSuccess(true);
+            handleLogin();
+        } else {
+            setHasErrors(true);
+            if (response.data.message != undefined) {
+                setErrorMessage(response.data.message);
+            }
+        }
+
+    }
+    
+    const handleRegistration = (e) => {
+        e.preventDefault();
+        setErrorMessage(null);
+        setHasErrors(false);
+        setRegisterSuccess(false);
+
+        const registrationUrl = process.env.REACT_APP_BASE_URL + 'api/users';
+        let payload = constructPayload();
+        execRegistrationApi(registrationUrl, payload, Config);
+    }
+    
+    const execLoginApi = (loginUrl, payload, Config) => {
+        axios.post(loginUrl, payload, Config).then(response => {
+            const { token } = response.data;
+            if (token != undefined) {
+                // @todo: login stuff... token is a token, ofc
+            }
+        }).catch(error => console.log('Error', error)).finally(() => {});
+    }
+    
+    const handleLogin = () => {
+        const loginUrl = process.env.REACT_APP_BASE_URL + 'api/login';
+        const username = customer_email;
+        const payload = { username, password };
+        execLoginApi(loginUrl, payload, Config);
     }
     
     return (
@@ -68,30 +113,16 @@ const Register = ({showRegistration, onCloseClick}) => {
             <div className="register-container">
                 <div className="row">
                     {register_success && <span>Congratulations! You have successfully registered</span>}
+                    {has_errors && <span className='error-msg'>{error_message}</span>}
                 </div>
-                <div className="row">
-                    <div className="form-input-container">
-                        <input type="text" name="firstname" className="form-input" onChange={e => setFirstname(e.target.value)} placeholder="First Name" />
-                    </div>
-                </div>
+
+                <TextInput type="text" name="firstname" onChangeFn={setFirstname} placeholder="First Name "/>
+
+                <TextInput type="text" name="lastname" onChangeFn={setLastname} placeholder="Last Name "/>
                 
-                <div className="row">
-                    <div className="form-input-container">
-                        <input type="text" name="lastname" className="form-input" onChange={e => setLastname(e.target.value)} placeholder="Last Name" />
-                    </div>
-                </div>
-                
-                <div className="row">
-                    <div className="form-input-container">
-                        <input type="email" name="customer_email" className="form-input" onChange={e => setCustomerEmail(e.target.value)} placeholder="E-mail address" />
-                    </div>
-                </div>
-                
-                <div className="row">
-                    <div className="form-input-container">
-                        <input type="password" name="password" className="form-input" onChange={e => setFirstPassword(e.target.value)} placeholder="Password" />
-                    </div>
-                </div>
+                <TextInput type="email" name="customer_email" onChangeFn={setCustomerEmail} placeholder="Your e-mail address"/>
+        
+                <TextInput type="password" name="password" onChangeFn={setFirstPassword} placeholder="Your password" />
                 
                 <div className="row">
                     <div className="form-input-container">
