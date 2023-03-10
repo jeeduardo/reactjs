@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const Product = ({product}) => {
+const Product = ({product, onClickFn}) => {
     const media_gallery_entries= JSON.parse(product.media_gallery_entries);
     console.log('Product ', media_gallery_entries);
     let imageFile = '/logo512.png';
@@ -21,7 +21,7 @@ const Product = ({product}) => {
                         <span className="price">$349.75</span>
                     </div>
                     <div className="product-actions w-full">
-                        <button className="btn btn-primary">Add to Cart</button>
+                        <button className="btn btn-primary" onClick={e => onClickFn(e, product)}>Add to Cart</button>
                     </div>
                 </div>
             </div>

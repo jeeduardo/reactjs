@@ -94,7 +94,6 @@ const Register = ({showRegistration, onCloseClick, setIsLoggedIn}) => {
         axios.post(loginUrl, payload, Config).then(response => {
             const { token } = response.data;
             if (token != undefined) {
-                // @todo: login stuff... token is a token, ofc
                 setCookie('token', token);
                 setIsLoggedIn(true);
             }

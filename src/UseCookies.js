@@ -4,7 +4,7 @@ export const useCookies = () => {
     }
     
     const getCookie = (name) => {
-        const cookies = document.cookie.split(';');
+        const cookies = document.cookie.split('; ');
         let value = '';
 
         cookies.forEach(cookie => {
