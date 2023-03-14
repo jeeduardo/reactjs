@@ -19,7 +19,7 @@ const TextInput = ({type, name, onChangeFn, placeholder}) => {
     )
 }
 
-const Register = ({showRegistration, onCloseClick, setIsLoggedIn}) => {
+const Register = ({showRegistration, onCloseClick, setIsLoggedIn, handleLogin}) => {
     const [firstname, setFirstname] = useState(null);
     const [lastname, setLastname] = useState(null);
     const [customer_email, setCustomerEmail] = useState(null);
@@ -32,9 +32,9 @@ const Register = ({showRegistration, onCloseClick, setIsLoggedIn}) => {
     const [error_message, setErrorMessage] = useState(null);
     const [setCookie, getCookie] = useCookies();
 
-    let registrationClasses = 'register-overlay hidden';
+    let registrationClasses = 'overlay hidden';
     if (showRegistration) {
-        registrationClasses = 'register-overlay';
+        registrationClasses = 'overlay';
     }
     
     const passwordChangeHandler = (e) => {
@@ -69,7 +69,7 @@ const Register = ({showRegistration, onCloseClick, setIsLoggedIn}) => {
         const { id, email } = response.data;
         if (id != undefined && email != undefined) {
             setRegisterSuccess(true);
-            handleLogin();
+            handleLogin(customer_email, password);
         } else {
             setHasErrors(true);
             if (response.data.message != undefined) {
@@ -88,23 +88,6 @@ const Register = ({showRegistration, onCloseClick, setIsLoggedIn}) => {
         const registrationUrl = process.env.REACT_APP_BASE_URL + 'api/users';
         let payload = constructPayload();
         execRegistrationApi(registrationUrl, payload, Config);
-    }
-    
-    const execLoginApi = (loginUrl, payload, Config) => {
-        axios.post(loginUrl, payload, Config).then(response => {
-            const { token } = response.data;
-            if (token != undefined) {
-                setCookie('token', token);
-                setIsLoggedIn(true);
-            }
-        }).catch(error => console.log('Error', error)).finally(() => {});
-    }
-    
-    const handleLogin = () => {
-        const loginUrl = process.env.REACT_APP_BASE_URL + 'api/login';
-        const username = customer_email;
-        const payload = { username, password };
-        execLoginApi(loginUrl, payload, Config);
     }
     
     return (
