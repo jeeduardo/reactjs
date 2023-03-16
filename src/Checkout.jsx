@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// import { CheckoutStep } from './CheckoutStep/CheckoutStep';
+import { CartSummaryStepContent, CheckoutStep, ShippingStepContent } from './CheckoutStep';
 
 const Checkout = () => {
     return (
@@ -7,15 +9,8 @@ const Checkout = () => {
                 <h1>Checkout</h1>
                 <h3 className="estimated-total">Estimated Total</h3>
                 <div className="step-content">
-                    <section id="cart-summary" className="step">
-                        <header className="step-header">
-                            <h3>Cart Summary</h3>
-                            <div className="step-toggle">
-                                <div className="arrow-1"></div>
-                                <div className="arrow-2"></div>
-                            </div>
-                        </header>
-                    </section>
+                    <CheckoutStep id="cart-summary" title="Cart Summary" stepContent=<CartSummaryStepContent /> />
+                    <CheckoutStep id="shipping" title="Shipping" stepContent=<ShippingStepContent /> />
                 </div>
             </div>
         </div>

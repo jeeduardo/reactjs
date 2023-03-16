@@ -88,7 +88,7 @@ function App() {
   const loginLink  = <li className="menu-item"><LoginLink toggleShowLogin={toggleShowLogin} /></li>;
   return (
     <AppContext.Provider value={{ cart, setShowMiniCart }}>
-      <div className="App">
+      <div id="app">
         <Header>
           <Menu toggleShowMiniCart={toggleShowMiniCart} showMiniCart={showMiniCart}>
             {!isLoggedIn && registrationLink }
