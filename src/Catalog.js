@@ -26,16 +26,16 @@ const Catalog = ({setShowMiniCart}) => {
             qty: 1,
             token
         }
-        if (getCookie('quote-id') == '') {
+
+        // Cart id q
+        if (getCookie('q') == '') {
             axios.post(initCartUrl, { token }, Config).then(response => {
-                // of course let's hash the quote ID in some way eventually
-                console.log(initCartUrl + ' response :: ', response.data);
-                setCookie('quote-id', response.data);
+                setCookie('q', response.data);
                 payload.quote_id = response.data;
                 execAddToCartApi(payload);
             });
         } else {
-            payload.quote_id = getCookie('quote-id');
+            payload.quote_id = getCookie('q');
             execAddToCartApi(payload);
         }
     }
@@ -45,7 +45,6 @@ const Catalog = ({setShowMiniCart}) => {
         axios.post(addToCartUrl, payload, Config).then(response => {
             // Data about the cartItem added...
             const { item_id, sku, qty } = response.data;
-            console.log('execAddToCartApi :: response?', response.data);
             if (item_id != undefined) {
                 setShowMiniCart(true);
             }
