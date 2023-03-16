@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from 'axios';
 import Product from "./Category/Product";
 import { useCookies } from "./UseCookies";
+import { AppContext } from "./Context/AppContext";
 
 const Config = {
     headers: {
@@ -9,7 +10,10 @@ const Config = {
     }
 };
 
-const Catalog = ({setShowMiniCart}) => {
+const Catalog = () => {
+    // get from the context
+    const { setShowMiniCart } = useContext(AppContext);
+    
     const [products, setProducts] = useState([]);
     const [category, setCategory] = useState({});
     const [productsLoaded, setProductsLoaded] = useState(false);

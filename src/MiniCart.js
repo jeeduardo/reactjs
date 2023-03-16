@@ -10,13 +10,17 @@ const MiniCart = ({showMiniCart, cart}) => {
     }
     console.log('MiniCart.js :: ', showMiniCart, miniCartContainerClasses);
 
+    const goToCheckout = (e) => {
+        window.location.pathname = '/checkout';
+    }
+
     return (
         <div className="cart-content">
             
             <div id="minicart-container" className={miniCartContainerClasses}>
                 <h2 className="text-center heading font-bold">My Cart</h2>
                 <ol className="cart-list">
-                    {cart.items && cart.items.map(cartItem => <MiniCartItem cartItem={cartItem} />)}
+                    {cart.items && cart.items.map((cartItem, i) => <MiniCartItem cartItem={cartItem} key={i} />)}
                 </ol>
                 <div className="spinner-container hidden">
                     <div className="spinner">
@@ -34,7 +38,7 @@ const MiniCart = ({showMiniCart, cart}) => {
                 </div>
                 <div className="cart-main-actions">
                     <div className="primary">
-                        <Button className="btn btn-checkout">Checkout</Button>
+                        <Button className="btn btn-checkout" onClick={goToCheckout}>Checkout</Button>
                     </div>
                 </div>
             </div>

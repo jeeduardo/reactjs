@@ -13,6 +13,8 @@ import { useCookies } from './UseCookies';
 import Menu from './Header/Menu';
 import Button from './Button';
 import { AppContext } from './Context/AppContext';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Checkout from './Checkout';
 
 const Config = {
     headers: {
@@ -46,6 +48,7 @@ function App() {
   }
   
   const toggleShowMiniCart = (e) => {
+    e.preventDefault();
     let showMiniCartFlag = showMiniCart;
     showMiniCartFlag = !showMiniCartFlag;
     setShowMiniCart(showMiniCartFlag);
@@ -84,7 +87,7 @@ function App() {
   const registrationLink = <li className="menu-item"><RegisterLink toggleShowRegistration={toggleShowRegistration} /></li>;
   const loginLink  = <li className="menu-item"><LoginLink toggleShowLogin={toggleShowLogin} /></li>;
   return (
-    <AppContext.Provider value={{ cart }}>
+    <AppContext.Provider value={{ cart, setShowMiniCart }}>
       <div className="App">
         <Header>
           <Menu toggleShowMiniCart={toggleShowMiniCart} showMiniCart={showMiniCart}>
@@ -102,12 +105,22 @@ function App() {
             showLogin={showLogin} 
             toggleShowLogin={toggleShowLogin} 
             handleLogin={handleLogin} />
-          <Catalog setShowMiniCart={setShowMiniCart} />
+          <RouterProvider router={router} />
         </div>
       </div>
 
     </AppContext.Provider>
   );
-}
+};
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Catalog />
+  },
+  {
+    path: "/checkout",
+    element: <Checkout />
+  }
+]);
 export default App;
